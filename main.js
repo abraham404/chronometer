@@ -1,51 +1,71 @@
-let referenceTime = Date.now();
-let accumulate = 0;
-let cronometrar = true;
+let centi_second = 0;
+let seconds = 0;
+let minutes = 0;
+let hours = 0;
 
-setInterval(() => {
+startFunction = () => {
+    control = setInterval(chronometer, 10);
+    document.getElementById("btn-start").disabled = true;
+};
 
-    let time = document.getElementById('time');
+pauseFunction = () => {
+    clearInterval(control);
+    document.getElementById("btn-start").disabled = false;
 
-    if (cronometrar) {
-        accumulate += Date.now() - referenceTime;
+};
+
+resetFunction = () => {
+    clearInterval(control);
+    document.getElementById("btn-start").disabled = false;
+    centi_second = 0;
+    seconds = 0;
+    minutes = 0;
+    hours = 0;
+    document.getElementById("hours").innerHTML = "00";
+    document.getElementById("minutes").innerHTML = "00";
+    document.getElementById("segunds").innerHTML = "00";
+    document.getElementById("centi_second").innerHTML = "00";
+};
+
+chronometer = () => {
+    if (centi_second < 99) {
+        centi_second++;
+        if (centi_second < 10) {
+            centi_second = '0' + centi_second;
+        }
+        document.getElementById('centi_second').innerHTML = centi_second;
+    }
+
+    if (centi_second == 99) {
+        centi_second = -1;
+    }
+
+    if (centi_second == 0) {
+        seconds++;
+        if (seconds < 10) {
+            seconds = '0' + seconds;
+        }
+        document.getElementById('segunds').innerHTML =  seconds;
+    }
+
+    if (seconds == 59) {
+        seconds = -1;
     }
 
     
-
-    referenceTime = Date.now();
-
-    time.innerHTML = formatearMS(accumulate);
-
-}, 1000 / 60);
-
-const formatearMS = (time_ms) => {
-    let MS = time_ms % 1000;
-    let S = Math.floor(((time_ms - MS) / 1000) % 60);
-    let M = Math.floor((S / 60) % 60);
-    let H = Math.floor((M / 60));
-
-    Number.prototype.zeros = function (n) {
-        return (this + '').padStart(n, 0)
+    if ((centi_second == 0) && (seconds == 0)) {
+        
+        minutes++;
+        if (minutes < 10) { minutes = "0" + minutes }
+    
+        document.getElementById('minutes').innerHTML =  minutes;
     }
-
-    if (S == 5){
-        alert("hola");
+    if (minutes == 59) {
+        minutes = -1;
     }
-    if (S == 10){
-        alert("No desde que me rechasaste persi la cabeza")
+    if ((centi_second == 0) && (seconds == 0) && (minutes == 0)) {
+        hours++;
+        if (hours < 10) { hours = "0" + hours }
+        document.getElementById('hours').innerHTML = hours;
     }
-
-    return H.zeros(2) + ':' + M.zeros(2) + ':' + S.zeros(2) + ':' + MS.zeros(3);
-}
-
-const startFuntion = () => {
-    cronometrar = true;
-}
-
-const pauseFuntion = () => {
-    cronometrar = false;
-}
-
-const resetFuntion = () => {
-    accumulate = 0;
 }
